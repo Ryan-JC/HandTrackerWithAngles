@@ -6,7 +6,7 @@ import time
 from angleCalculator import calculate_angle, initialize_kalman, apply_kalman_filter
 
 mpHands = mp.solutions.hands
-hands = mpHands.Hands()
+hands = mpHands.Hands(max_num_hands=1, min_detection_confidence=0.5) # Limits to 1 hand for faster processing
 mpDraw = mp.solutions.drawing_utils
 
 kalman_filters = {
@@ -43,9 +43,12 @@ def main():
 
         img = cv2.flip(img, 1)
         imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        results = hands.process(imgRGB)
 
-        if results.multi_hand_landmarks:
+        # Resizes image for faster processing
+        small_img = cv2.resize(imgRGB, (320, 240))
+        results = hands.process(small_img)
+
+        if results and results.multi_hand_landmarks:
             for handLms in results.multi_hand_landmarks:
                 landmarks = [(lm.x, lm.y, lm.z) for lm in handLms.landmark]
                 h, w, c = img.shape

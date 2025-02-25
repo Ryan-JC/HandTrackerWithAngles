@@ -13,14 +13,7 @@ def initialize_kalman():
     kf.Q = np.array([[1, 0], [0, 1]])  # Process noise
     return kf
 
-# Create a filter for each finger
-thumb_kf = initialize_kalman()
-index_kf = initialize_kalman()
-middle_kf = initialize_kalman()
-ring_kf = initialize_kalman()
-pinky_kf = initialize_kalman()
-
-def kalman_filter(kf, angle_measurement):
+def apply_kalman_filter(kf, angle_measurement):
     """ Applies Kalman filter to smooth the angle measurement """
     kf.predict()
     kf.update([angle_measurement])
